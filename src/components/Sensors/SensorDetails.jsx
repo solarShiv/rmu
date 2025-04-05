@@ -19,16 +19,24 @@ import { faTint } from "@fortawesome/free-solid-svg-icons"; // Importing the hum
 
 
 const imeiList = [
-  "869630054635820",
+  "869630054647163",
   "869630054641893",
-  "869630054641836",
-  "869630054641778",
-  "869630054641570",
-  "869630054636075",
-  "869630054641810",
-  "869630054647270",
   "869630054647155",
+  "869630054641570",
+  "869630054647270",
+  "869630054636075",
   "864710059982404",
+  "869630054641455",
+  "869630054642545",
+  "869630054647007",
+  "869630054645142",
+  "869630054641075",
+  "869630054647163",
+  "869630054642461",
+  "869630054641737",
+  "869630054646975",
+  "869630054640895",
+
 ];
 
 function SensorDetails() {
@@ -42,6 +50,13 @@ function SensorDetails() {
   const [data8, setData8] = useState([]);
   const [data9, setData9] = useState([]);
   const [data10, setData10] = useState([]);
+  const [data11, setData11] = useState([]);
+  const [data12, setData12] = useState([]);
+  const [data13, setData13] = useState([]);
+  const [data14, setData14] = useState([]);
+  const [data15, setData15] = useState([]);
+  const [data16, setData16] = useState([]);
+  const [data17, setData17] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [receiveImei, setRecieveImei] = useState("");
@@ -93,6 +108,13 @@ function SensorDetails() {
       setData8(results[7]);
       setData9(results[8]);
       setData10(results[9]);
+      setData11(results[10]);
+      setData12(results[11]);
+      setData13(results[12]);
+      setData14(results[13]);
+      setData15(results[14]);
+      setData16(results[15]);
+      setData17(results[16]);
 
       // Handle errors
       const failedRequests = responses.filter(
@@ -120,6 +142,13 @@ function SensorDetails() {
   const latestData8 = data8.length > 0 ? data8[data8.length - 1] : null;
   const latestData9 = data9.length > 0 ? data9[data9.length - 1] : null;
   const latestData10 = data10.length > 0 ? data10[data10.length - 1] : null;
+  const latestData11 = data11.length > 0 ? data11[data11.length - 1] : null;
+  const latestData12 = data12.length > 0 ? data12[data12.length - 1] : null;
+  const latestData13 = data13.length > 0 ? data13[data13.length - 1] : null;
+  const latestData14 = data14.length > 0 ? data14[data14.length - 1] : null;
+  const latestData15 = data15.length > 0 ? data15[data15.length - 1] : null;
+  const latestData16 = data16.length > 0 ? data16[data16.length - 1] : null;
+  const latestData17 = data17.length > 0 ? data17[data17.length - 1] : null;
   // ${receiveImei}
   const fetchImeiData = async () => {
     if (!receiveImei) {
@@ -236,6 +265,13 @@ function SensorDetails() {
             latestData8,
             latestData9,
             latestData10,
+            latestData11,
+            latestData12,
+            latestData13,
+            latestData14,
+            latestData15,
+            latestData16,
+            latestData17,
             latestreceiveImeiData,
           ].map((data, index) =>
             data ? (
