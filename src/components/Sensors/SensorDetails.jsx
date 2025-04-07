@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -5,218 +6,89 @@ import {
   Typography,
   CircularProgress,
   Grid,
+  IconButton,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import BackButton from "../ReusableComp/BackButton";
 import axios from "axios";
-import url from "../../utils/API_Url";
-import Header from "../Header/Header";
 import { toast, ToastContainer } from "react-toastify";
 import AddSensor from "./AddSensor";
+import Header from "../Header/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTint } from "@fortawesome/free-solid-svg-icons"; // Importing the humidity icon
-
-
-const imeiList = [
-  "869630054647163",
-  "869630054641893",
-  "869630054647155",
-  "869630054641570",
-  "869630054647270",
-  "869630054636075",
-  "864710059982404",
-  "869630054641455",
-  "869630054642545",
-  "869630054647007",
-  "869630054645142",
-  "869630054641075",
-  "869630054647163",
-  "869630054642461",
-  "869630054641737",
-  "869630054646975",
-  "869630054640895",
-
-];
+import { faTint, faTrash } from "@fortawesome/free-solid-svg-icons"; // Added faTrash icon for delete button
 
 function SensorDetails() {
-  const [data1, setData1] = useState([]);
-  const [data2, setData2] = useState([]);
-  const [data3, setData3] = useState([]);
-  const [data4, setData4] = useState([]);
-  const [data5, setData5] = useState([]);
-  const [data6, setData6] = useState([]);
-  const [data7, setData7] = useState([]);
-  const [data8, setData8] = useState([]);
-  const [data9, setData9] = useState([]);
-  const [data10, setData10] = useState([]);
-  const [data11, setData11] = useState([]);
-  const [data12, setData12] = useState([]);
-  const [data13, setData13] = useState([]);
-  const [data14, setData14] = useState([]);
-  const [data15, setData15] = useState([]);
-  const [data16, setData16] = useState([]);
-  const [data17, setData17] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [receiveImei, setRecieveImei] = useState("");
-  const [receiveImeiData, setReceiveImeiData] = useState([]);
   const [error, setError] = useState(null);
-  //   const [key, setKey] = useState(0);
-  //   const { sensorName } = useParams();
-  //   const sensor = sensorData[sensorName];
 
-  const latestreceiveImeiData =
-    receiveImeiData.length > 0
-      ? receiveImeiData[receiveImeiData.length - 1]
-      : null;
-
-  // console.log("data4", latestreceiveImeiData);
-  // console.log("Received EMI:", receiveImei);
-  //// 869630054635820
-  // Callback function to receive data from child
-  const handleIemiData = (data) => {
-    setRecieveImei(data);
-    setReceiveImeiData([]);
-    setOpen(false);
+  // Callback function to receive data from AddSensor
+  const handleIemiData = (newSensorData) => {
+    setData((prevData) => [...prevData, newSensorData]); // Add new sensor data to the list
+    setOpen(false); // Close the modal after adding data
   };
 
+  // Fetch all sensor data from the API
   const getData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const requests = imeiList.map((imei) =>
-        axios.get(`${url}/data/getData/${imei}`)
+      // Fetch data for all IMEIs from the API
+      const response = await axios.get(
+        "http://srv619650.hstgr.cloud:4042/api/data/getLatestDataForAllIMEIs"
       );
-      const responses = await Promise.allSettled(requests);
 
-      console.log("responses", responses);
-
-      // Extract successful responses
-      const results = responses.map((res, index) =>
-        res.status === "fulfilled" ? res.value.data.tempData : []
-      );
-      // Assign results to state variables
-      setData1(results[0]);
-      setData2(results[1]);
-      setData3(results[2]);
-      setData4(results[3]);
-      setData5(results[4]);
-      setData6(results[5]);
-      setData7(results[6]);
-      setData8(results[7]);
-      setData9(results[8]);
-      setData10(results[9]);
-      setData11(results[10]);
-      setData12(results[11]);
-      setData13(results[12]);
-      setData14(results[13]);
-      setData15(results[14]);
-      setData16(results[15]);
-      setData17(results[16]);
-
-      // Handle errors
-      const failedRequests = responses.filter(
-        (res) => res.status === "rejected"
-      );
-      if (failedRequests.length > 0) {
-        toast.error(`${failedRequests.length} request(s) failed.`);
+      if (response.status === 200) {
+        const sensorData = response.data.data; // Extracting the data field from the response
+        setData(sensorData); // Set the received data
+      } else {
+        throw new Error("Failed to fetch sensor data");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred.");
+      console.error("Error fetching data:", error.message);
+      toast.error("An unexpected error occurred while fetching data.");
       setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Extract the latest data from each dataset
-  const latestData1 = data1.length > 0 ? data1[data1.length - 1] : null;
-  const latestData2 = data2.length > 0 ? data2[data2.length - 1] : null;
-  const latestData3 = data3.length > 0 ? data3[data3.length - 1] : null;
-  const latestData4 = data4.length > 0 ? data4[data4.length - 1] : null;
-  const latestData5 = data5.length > 0 ? data5[data5.length - 1] : null;
-  const latestData6 = data6.length > 0 ? data6[data6.length - 1] : null;
-  const latestData7 = data7.length > 0 ? data7[data7.length - 1] : null;
-  const latestData8 = data8.length > 0 ? data8[data8.length - 1] : null;
-  const latestData9 = data9.length > 0 ? data9[data9.length - 1] : null;
-  const latestData10 = data10.length > 0 ? data10[data10.length - 1] : null;
-  const latestData11 = data11.length > 0 ? data11[data11.length - 1] : null;
-  const latestData12 = data12.length > 0 ? data12[data12.length - 1] : null;
-  const latestData13 = data13.length > 0 ? data13[data13.length - 1] : null;
-  const latestData14 = data14.length > 0 ? data14[data14.length - 1] : null;
-  const latestData15 = data15.length > 0 ? data15[data15.length - 1] : null;
-  const latestData16 = data16.length > 0 ? data16[data16.length - 1] : null;
-  const latestData17 = data17.length > 0 ? data17[data17.length - 1] : null;
-  // ${receiveImei}
-  const fetchImeiData = async () => {
-    if (!receiveImei) {
-      setError("No IMEI provided");
-      toast.error("No IMEI provided");
-      return;
-    }
-    // setError(null);
+  // Function to handle deleting a sensor data
+  const deleteSensor = async (imei) => {
     try {
-      setLoading(true);
-      const resp = await axios.get(`${url}/data/getData/${receiveImei}`);
-      setReceiveImeiData(resp.data.tempData);
-      // console.log("API Response:", resp.data);
-    } catch (err) {
-      if (err.response) {
-        // Server responded with a status code (e.g., 404)
-        const status = err.response.status;
-        const message = err.response.data?.message || "An error occurred";
-        if (status === 404) {
-          // setError(`No data found for IMEI: ${receiveImei}`);
-          toast.error(`No data found for IMEI: ${receiveImei}`);
-        } else {
-          setError(message);
-          toast.error(message);
-        }
-      } else if (err.request) {
-        // Request was made but no response received (e.g., network error)
-        setError("Network error: Unable to reach the server");
-        toast.error("Network error: Unable to reach the server");
+      const response = await axios.post(
+        "http://srv619650.hstgr.cloud:4042/api/data/delete-data", 
+        { imei }  // Passing the IMEI in the request body
+      );
+
+      if (response.status === 200) {
+        toast.success(`Sensor with IMEI ${imei} deleted successfully.`);
+        // Remove the deleted sensor data from the state
+        setData((prevData) => prevData.filter((sensor) => sensor.imei !== imei));
       } else {
-        // Other errors (e.g., setup issues)
-        // setError("An unexpected error occurred");
-        toast.error("An unexpected error occurred");
+        throw new Error("Failed to delete sensor data");
       }
-      toast.error(err);
-      console.error("Fetch Error:", err);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Error deleting data:", error.message);
+      toast.error("An unexpected error occurred while deleting data.");
     }
   };
-
-  useEffect(() => {
-    fetchImeiData();
-  }, [receiveImei]); // Runs whe
 
   useEffect(() => {
     getData(); // Fetch data initially
-
     const interval = setInterval(() => {
-      getData(); // Fetch data every 70 seconds
-    }, 70000);
-
+      getData(); // Fetch data every 60 seconds
+    }, 60000);
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
-  //   if (!sensor) {
-  //     return <Typography variant="h6">Sensor data not found!</Typography>;
-  //   }
-
+  // Helper function to format timestamp
   const formatTimestamp = (timestamp) => {
-    // Handle UNIX timestamp (convert to number)
-    if (!isNaN(timestamp)) {
-      return new Date(timestamp * 1000).toLocaleString();
-    }
-    // Handle "YYYY-MM-DD HH:mm:ss" format
-    return new Date(timestamp).toLocaleString();
+    if (!timestamp) return "N/A";
+    return new Date(timestamp).toLocaleString(); // Convert timestamp to local string
   };
 
+  // If data is loading, show a spinner
   if (loading) {
     return (
       <Box sx={{ p: 3, display: "flex", justifyContent: "center" }}>
@@ -225,13 +97,7 @@ function SensorDetails() {
     );
   }
 
-  // if (!latestData1 && !latestData2 && !latestData3) {
-  //   return (
-  //     <Box sx={{ p: 3, display: "flex", justifyContent: "center" }}>
-  //       <Typography variant="h6">No data available</Typography>
-  //     </Box>
-  //   );
-  // }
+  console.log(" Data:", data); // Log the sensor data for debugging
 
   return (
     <>
@@ -254,120 +120,72 @@ function SensorDetails() {
       </div>
       <Box sx={{ p: 3 }}>
         <Grid container spacing={3} justifyContent="center">
-          {[
-            latestData1,
-            latestData2,
-            latestData3,
-            latestData4,
-            latestData5,
-            latestData6,
-            latestData7,
-            latestData8,
-            latestData9,
-            latestData10,
-            latestData11,
-            latestData12,
-            latestData13,
-            latestData14,
-            latestData15,
-            latestData16,
-            latestData17,
-            latestreceiveImeiData,
-          ].map((data, index) =>
-            data ? (
-              <Grid item xs={12} sm={6} md={6} key={index}>
-                <Card
-                  sx={{
-                    p: 2,
-                    textAlign: "center",
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    "&:hover": {
-                      transform: "scale(1.05)",
-                      boxShadow: 6,
-                    },
-                  }}
-                >
-                  <CardContent>
-                    <Typography
-                      variant="h5"
-                      sx={{ fontWeight: "bold", color: "#000", mb: 2 }}
-                      className="border-b-2 border-black"
-                    >
-                      <span>Sensor {index + 1}</span>
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      sx={{ fontWeight: "bold", color: "#1976d2" }}
-                    >
-                      IMEI No. : {data?.imei}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{ fontSize: "1.1rem", color: "#d32f2f" }}
-                    >
-                      🌡 Temperature: <strong>{data?.temperature}°C</strong>
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{ fontSize: "1.1rem", color: "#87CEEB" }}
-                    >
-                      <FontAwesomeIcon icon={faTint} /> Humidity: <strong>{data?.humidity}%</strong>
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: "gray" }}>
-                      ⏳ Last Updated: {formatTimestamp(data?.timestamp)}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ) : (
-              <>
-                {!receiveImei ? null : (
-                  <Grid item xs={12} sm={6} md={6}>
-                    <Card
-                      sx={{
-                        p: 2,
-                        textAlign: "center",
-                        borderRadius: 3,
-                        boxShadow: 3,
-                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                          boxShadow: 6,
-                        },
-                      }}
-                    >
-                      <CardContent>
-                        <Typography
-                          variant="h5"
-                          sx={{ fontWeight: "bold", color: "#000", mb: 2 }}
-                          className="border-b-2 border-black"
-                        >
-                          <span>Sensor {index + 1}</span>
-                        </Typography>
-                        <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "bold", color: "#1976d2" }}
-                        >
-                          IMEI No. : {receiveImei}
-                        </Typography>
-                        <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "bold", color: "#1976d2" }}
-                        >
-                          No Data Available
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                )}
-              </>
-            )
+          {data.length > 0 ? (
+            data?.map((sensorData, index) => {
+              const { imei, temperature, humidity, timestamp } = sensorData;
+              return (
+                <Grid item xs={12} sm={6} md={4} key={imei}>
+                  <Card
+                    sx={{
+                      p: 2,
+                      textAlign: "center",
+                      borderRadius: 3,
+                      boxShadow: 3,
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        boxShadow: 6,
+                      },
+                    }}
+                  >
+                    <CardContent>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", color: "#000", mb: 2 }}
+                      >
+                        Sensor {index + 1}
+                      </Typography>
+                      <Typography variant="h6" sx={{ color: "#1976d2" }}>
+                        IMEI No.: {imei}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontSize: "1.1rem", color: "red" }}
+                      >
+                        🌡 Temperature:{" "}
+                        <strong>{temperature || "N/A"}°C</strong>
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontSize: "1.1rem", color: "skyblue" }}
+                      >
+                        <FontAwesomeIcon icon={faTint} /> Humidity:{" "}
+                        <strong>{humidity || "N/A"}%</strong>
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: "gray" }}>
+                        ⏳ Last Updated:{" "}
+                        {formatTimestamp(timestamp)}
+                      </Typography>
+                      {/* Delete Button */}
+                      <IconButton
+                        sx={{ position: "absolute", top: 8, right: 8 }}
+                        color="error"
+                        onClick={() => deleteSensor(imei)} // Delete the sensor when clicked
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </IconButton>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })
+          ) : (
+            <Typography variant="body1" color="gray">
+              No sensor data available.
+            </Typography>
           )}
         </Grid>
       </Box>
-
       <ToastContainer />
     </>
   );

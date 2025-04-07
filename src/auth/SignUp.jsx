@@ -126,7 +126,8 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-[#a20000] text-white py-3 rounded-lg text-lg font-semibold border-4 border-[#a20000] hover:bg-red-600 hover:text-[#a20000] hover:border-red-700 transition duration-300 ease-in-out mt-4"
+            style={{border:"1px solid #b38686",hover: { borderColor: "#a20000" }}}
+            className="w-full border-2-gray  bg-[#a20000] text-#a20000 py-3 rounded-lg text-lg font-semibold border-4 border-[#a20000] hover:bg-red-600 hover:text-[#a20000] hover:border-red-700 transition duration-300 ease-in-out mt-4"
           >
             Submit
           </button>
