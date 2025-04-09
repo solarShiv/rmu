@@ -13,7 +13,29 @@ import { toast, ToastContainer } from "react-toastify";
 import AddSensor from "./AddSensor";
 import Header from "../Header/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTint, faTrash } from "@fortawesome/free-solid-svg-icons"; // Added faTrash icon for delete button
+import { faTint, faTrash } from "@fortawesome/free-solid-svg-icons";
+
+// Mapping of IMEI numbers to sensor locations
+const imeiToLocationMap = {
+  "869630054647155": "A13",
+  "869630054641893": "A11",
+  "869630054641570": "A15",
+  "869630054635820": "A10",
+  "869630054647270": "A19",
+  "869630054642248": "A7",
+  "869630054636075": "A16",
+  "869630054641455": "A20",
+  "869630054646975": "A9",
+  "869630054642545": "A5",
+  "869630054647007": "A2",
+  "869630054641737": "A17",
+  "869630054640895": "A3",
+  "869630054645142": "A14",
+  "869630054642461": "A6",
+  "869630054647163": "UPS Room",
+  "869630054642438": "UPS Room",
+  "864710059982404": "Delhi Office",
+};
 
 function SensorDetails() {
   const [data, setData] = useState([]);
@@ -97,7 +119,7 @@ function SensorDetails() {
     );
   }
 
-  console.log(" Data:", data); // Log the sensor data for debugging
+  console.log("Data:", data); // Log the sensor data for debugging
 
   return (
     <>
@@ -121,8 +143,9 @@ function SensorDetails() {
       <Box sx={{ p: 3 }}>
         <Grid container spacing={3} justifyContent="center">
           {data.length > 0 ? (
-            data?.map((sensorData, index) => {
+            data.map((sensorData, index) => {
               const { imei, temperature, humidity, timestamp } = sensorData;
+              const location = imeiToLocationMap[imei] || "Unknown Location"; // Get the location by IMEI
               return (
                 <Grid item xs={12} sm={6} md={4} key={imei}>
                   <Card
@@ -143,7 +166,7 @@ function SensorDetails() {
                         variant="h5"
                         sx={{ fontWeight: "bold", color: "#000", mb: 2 }}
                       >
-                        Sensor {index + 1}
+                        Location: {location} {/* Display the location */}
                       </Typography>
                       <Typography variant="h6" sx={{ color: "#1976d2" }}>
                         IMEI No.: {imei}

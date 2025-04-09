@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../assets/Logo/G1.png";
 
 function Header() {
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   //   const handleLogout = () => {
   //     console.log("Logging out...");
@@ -20,6 +20,11 @@ function Header() {
           alt="Company Logo"
           className="h-10 w-auto object-contain"
         />
+      </div>
+
+      {/* Heading in the middle */}
+      <div className="absolute left-1/2 transform -translate-x-1/2">
+        <h2 className="text-white font-semibold text-xl">A-Section</h2>
       </div>
 
       {/* Logout Button */}
