@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Grid,
   IconButton,
+  Button,
 } from "@mui/material";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -14,24 +15,24 @@ import AddSensor from "./AddSensor";
 import Header from "../Header/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTint, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom"; // ✅ Import navigate
 
-// Mapping of IMEI numbers to sensor locations
 const imeiToLocationMap = {
-  "869630054647155": "A13",
-  "869630054641893": "A11",
-  "869630054641570": "A15",
-  "869630054635820": "A10",
-  "869630054647270": "A19",
-  "869630054642248": "A7",
-  "869630054636075": "A16",
-  "869630054641455": "A20",
-  "869630054646975": "A9",
-  "869630054642545": "A5",
-  "869630054647007": "A2",
-  "869630054641737": "A17",
-  "869630054640895": "A3",
-  "869630054645142": "A14",
-  "869630054642461": "A6",
+  "869630054647155": "Lam-Area-A13",
+  "869630054641893": "Lam-Area-A11",
+  "869630054641570": "Lam-Area-A15",
+  "869630054635820": "Pre-Lam-A10",
+  "869630054647270": "Post-Lam-A19",
+  "869630054642248": "Pre-Lam-A7",
+  "869630054636075": "Post-Lam-A16",
+  "869630054641455": "Post-Lam-A20",
+  "869630054646975": "Pre-Lam-A9",
+  "869630054642545": "Pre-Lam-A5",
+  "869630054647007": "Pre-Lam-A2",
+  "869630054641737": "Post-Lam-A17",
+  "869630054640895": "Pre-Lam-A3",
+  "869630054645142": "Lam-Area-A14",
+  "869630054642461": "Pre-Lam-A6",
   "869630054647163": "UPS Room",
   "869630054642438": "UPS Room",
   "864710059982404": "Delhi Office",
@@ -42,27 +43,22 @@ function SensorDetails() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // ✅ Navigation hook
 
-  // Callback function to receive data from AddSensor
   const handleIemiData = (newSensorData) => {
-    setData((prevData) => [...prevData, newSensorData]); // Add new sensor data to the list
-    setOpen(false); // Close the modal after adding data
+    setData((prevData) => [...prevData, newSensorData]);
+    setOpen(false);
   };
 
-  // Fetch all sensor data from the API
   const getData = async () => {
     try {
       setLoading(true);
       setError(null);
-
-      // Fetch data for all IMEIs from the API
       const response = await axios.get(
         "http://srv619650.hstgr.cloud:4042/api/data/getLatestDataForAllIMEIs"
       );
-
       if (response.status === 200) {
-        const sensorData = response.data.data; // Extracting the data field from the response
-        setData(sensorData); // Set the received data
+        setData(response.data.data);
       } else {
         throw new Error("Failed to fetch sensor data");
       }
@@ -75,18 +71,18 @@ function SensorDetails() {
     }
   };
 
-  // Function to handle deleting a sensor data
   const deleteSensor = async (imei) => {
     try {
       const response = await axios.post(
-        "http://srv619650.hstgr.cloud:4042/api/data/delete-data", 
-        { imei }  // Passing the IMEI in the request body
+        "http://srv619650.hstgr.cloud:4042/api/data/delete-data",
+        { imei }
       );
 
       if (response.status === 200) {
         toast.success(`Sensor with IMEI ${imei} deleted successfully.`);
-        // Remove the deleted sensor data from the state
-        setData((prevData) => prevData.filter((sensor) => sensor.imei !== imei));
+        setData((prevData) =>
+          prevData.filter((sensor) => sensor.imei !== imei)
+        );
       } else {
         throw new Error("Failed to delete sensor data");
       }
@@ -97,20 +93,18 @@ function SensorDetails() {
   };
 
   useEffect(() => {
-    getData(); // Fetch data initially
+    getData();
     const interval = setInterval(() => {
-      getData(); // Fetch data every 60 seconds
+      getData();
     }, 60000);
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
-  // Helper function to format timestamp
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return "N/A";
-    return new Date(timestamp).toLocaleString(); // Convert timestamp to local string
+    return new Date(timestamp).toLocaleString();
   };
 
-  // If data is loading, show a spinner
   if (loading) {
     return (
       <Box sx={{ p: 3, display: "flex", justifyContent: "center" }}>
@@ -118,8 +112,6 @@ function SensorDetails() {
       </Box>
     );
   }
-
-  console.log("Data:", data); // Log the sensor data for debugging
 
   return (
     <>
@@ -145,28 +137,29 @@ function SensorDetails() {
           {data.length > 0 ? (
             data.map((sensorData, index) => {
               const { imei, temperature, humidity, timestamp } = sensorData;
-              const location = imeiToLocationMap[imei] || "Unknown Location"; // Get the location by IMEI
+              const location = imeiToLocationMap[imei] || "Unknown Location";
+
               return (
                 <Grid item xs={12} sm={6} md={4} key={imei}>
                   <Card
-                    sx={{
-                      p: 2,
-                      textAlign: "center",
-                      borderRadius: 3,
-                      boxShadow: 3,
-                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                      "&:hover": {
-                        transform: "scale(1.05)",
-                        boxShadow: 6,
-                      },
-                    }}
+                   sx={{
+                    p: 2,
+                    textAlign: "center",
+                    borderRadius: 3,
+                    boxShadow: 3,
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                      boxShadow: 6,
+                    },
+                  }}
                   >
                     <CardContent>
                       <Typography
                         variant="h5"
                         sx={{ fontWeight: "bold", color: "#000", mb: 2 }}
                       >
-                        Location: {location} {/* Display the location */}
+                        {location}
                       </Typography>
                       <Typography variant="h6" sx={{ color: "#1976d2" }}>
                         IMEI No.: {imei}
@@ -186,10 +179,19 @@ function SensorDetails() {
                         <strong>{humidity || "N/A"}%</strong>
                       </Typography>
                       <Typography variant="body2" sx={{ color: "gray" }}>
-                        ⏳ Last Updated:{" "}
-                        {formatTimestamp(timestamp)}
+                        ⏳ Last Updated: {formatTimestamp(timestamp)}
                       </Typography>
-                      {/* Delete Button */}
+
+                      {/* View History Button */}
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        sx={{ mt: 2 }}
+                        onClick={() => navigate(`/history/${imei}`)} // ✅ Navigate to history
+                      >
+                        View History
+                      </Button>
+
                       <IconButton
                         sx={{ position: "absolute", top: 8, right: 8 }}
                         color="error"
