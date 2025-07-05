@@ -39,10 +39,10 @@ const imeiToLocationMap = {
   "864710059982404": "Delhi Office",
 
   // Section C
-  "864710056637597": "C-2 PreLam (Stringer)",
+  "864710056637597": "C-9 PreLam (Laminator-Area)",
   "869137069277549": "C-4 PreLam (Stringer)",
   "869137069273134": "C-8 PreLam (Laminator-Area)",
-  "864710056660722": "C-10 PreLam (Laminator-Area)",
+  "864710056660722": "C-7 PreLam (Rework manipulator)",
   "869137069233849": "C-12 PreLam (Laminator-Area)",
   "864710056661779": "C-15 Post-Lam (90 Visual)",
   "864710056637068": "C-19 Post-Lam (360 Visual)",
@@ -50,11 +50,11 @@ const imeiToLocationMap = {
 
   // Section D
   "869137069230357": "D-19 Post-EL (Simulator)",
-  "869137069271955": "D-6 Pre-Lam Area",
+  "869137069271955": "D-5 Pre-Lam (Glass Loader)",
   "864710056661183": "D-4 Pre-Lam (2nd glass loader)",
   "869137069277028": "D-2 Pre-Lam (Stringer Area)",
   "864710056661266": "D-14 Post-Lam Area",
-  "869137069276525": "D-17 Post-Lam (Curing Area)",
+  "869137069276525": "D-16 Post-Lam (Curing Chamber)",
   "869137069277408": "D-8 Post-Lam (Final QC)",
   "869137069234425": "D-10 Pre-Lam (Laminator-Area)",
   "869137069273142": "D-13 Pre-Lam (Laminator-Area)",
